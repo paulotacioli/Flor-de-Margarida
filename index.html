@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flor de Margarida - Moda feminina</title>
+  <meta name="description" content="Peças escolhidas uma a uma para mulheres que florescem todos os dias. Vestidos, blusas, calças e acessórios.">
+  <meta name="theme-color" content="#b38ed3">
+  <link rel="icon" href="assets/img/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-pagina="inicio">
+
+  <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header data-cabecalho></header>
+
+  <main id="conteudo">
+
+    <!-- Painel Customize: vive na pagina principal porque so ela recebe o runtime do claude.ai -->
+    <section class="container secao" data-painel-customize hidden>
+      <div class="secao-topo">
+        <div>
+          <p class="olho">Administração</p>
+          <h1>Customize</h1>
+          <p class="suave" style="max-width:58ch">
+            Escreva o que quer mudar no site, anexe imagens ou PDFs se ajudar, e o pedido entra na fila.
+            O Claude Code da administração executa automaticamente, em até 10 minutos, um pedido por vez.
+          </p>
+        </div>
+        <div data-sessao-acoes></div>
+      </div>
+      <div data-customize></div>
+    </section>
+
+    <div data-home>
+    <section class="container hero">
+      <div class="hero__grade">
+        <div class="hero__texto">
+          <p class="olho">Nova estação</p>
+          <h1 class="hero__titulo">Para mulheres que <em>florescem</em> todos os dias</h1>
+          <p>
+            Peças escolhidas uma a uma, para vestir bem no dia a dia e nos dias que pedem
+            um pouco mais. Do básico que você repete ao vestido que você guarda.
+          </p>
+          <div class="hero__acoes">
+            <a class="btn btn--primario btn--grande" href="produtos.html">Ver a coleção</a>
+            <a class="btn btn--contorno btn--grande" href="produtos.html?ordem=novidades">Novidades</a>
+          </div>
+        </div>
+        <div class="colagem" data-colagem></div>
+      </div>
+    </section>
+
+    <section class="container secao">
+      <div class="secao-topo">
+        <div>
+          <p class="olho">Por onde começar</p>
+          <h2>Navegue por categoria</h2>
+        </div>
+        <a class="btn btn--contorno" href="produtos.html">Ver tudo</a>
+      </div>
+      <div class="bento" data-bento></div>
+    </section>
+
+    <section class="container secao">
+      <div class="secao-topo">
+        <div>
+          <p class="olho">Chegou agora</p>
+          <h2>Novidades da estação</h2>
+        </div>
+        <a class="btn btn--contorno" href="produtos.html?ordem=novidades">Ver novidades</a>
+      </div>
+      <div class="grade-produtos" data-novidades></div>
+    </section>
+
+    <section class="container secao">
+      <div class="faixa-marca">
+        <img src="assets/img/marca-clara.png" alt="" width="420" height="244"
+             style="width:220px;height:auto" aria-hidden="true">
+        <div>
+          <h2>Cada peça passa pela nossa curadoria</h2>
+          <p style="max-width:52ch">
+            A gente prova, veste e só coloca na loja o que usaria. Tecido que se comporta,
+            caimento que respeita o corpo e tamanho que corresponde a etiqueta.
+          </p>
+          <div class="linha" style="margin-top:24px">
+            <a class="btn btn--contorno btn--grande" href="sobre.html">Conhecer a loja</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container secao">
+      <div class="secao-topo">
+        <div>
+          <p class="olho">Preferidas das clientes</p>
+          <h2>As mais amadas</h2>
+        </div>
+        <a class="btn btn--contorno" href="produtos.html?ordem=avaliacao">Ver ranking</a>
+      </div>
+      <div class="grade-produtos" data-amados></div>
+    </section>
+
+    <section class="container secao">
+      <div class="vantagens">
+        <div class="vantagem">
+          <svg class="i i--lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 16V6a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v10"/>
+            <path d="M15 9h3.6a1 1 0 0 1 .8.4l2.4 3.2a1 1 0 0 1 .2.6V16"/>
+            <path d="M3 16h1.5"/><path d="M10.5 16h4"/><path d="M20.5 16H22"/>
+            <circle cx="7" cy="17.5" r="2"/><circle cx="17.5" cy="17.5" r="2"/>
+          </svg>
+          <h3>Entrega rápida</h3>
+          <p>Expressa em até 24h e retirada na loja em 2 horas.</p>
+        </div>
+        <div class="vantagem">
+          <svg class="i i--lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 11a9 9 0 0 1 15-6.7L21 7"/><path d="M21 4v3.5h-3.5"/>
+            <path d="M21 13a9 9 0 0 1-15 6.7L3 17"/><path d="M3 20v-3.5h3.5"/>
+          </svg>
+          <h3>Troca sem dor de cabeça</h3>
+          <p>30 dias para trocar tamanho ou devolver, com a etiqueta.</p>
+        </div>
+        <div class="vantagem">
+          <svg class="i i--lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/><path d="M6.5 15h3"/>
+          </svg>
+          <h3>Como você preferir</h3>
+          <p>Pix com aprovação na hora, cartão em até 6x sem juros ou boleto.</p>
+        </div>
+        <div class="vantagem">
+          <svg class="i i--lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 21.5s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10.5" r="2.5"/>
+          </svg>
+          <h3>Loja de verdade</h3>
+          <p>Venha provar antes de levar na nossa loja física.</p>
+        </div>
+      </div>
+    </section>
+    </div>
+
+  </main>
+
+  <footer data-rodape></footer>
+
+  <script src="assets/js/icones.js"></script>
+  <script src="assets/js/dados.js"></script>
+  <script src="assets/js/loja.js"></script>
+  <script src="assets/js/componentes.js"></script>
+  <script src="assets/js/customize.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coleção - Flor de Margarida</title>
+  <meta name="description" content="Vestidos, camisas, alfaiataria, trico, jeans e acessorios femininos. Filtre por tamanho, cor e preco.">
+  <meta name="theme-color" content="#b38ed3">
+  <link rel="icon" href="assets/img/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-pagina="produtos">
+
+  <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header data-cabecalho></header>
+
+  <main id="conteudo" class="container secao">
+
+    <div class="secao-topo">
+      <div>
+        <p class="olho">Coleção completa</p>
+        <h1>Todas as peças</h1>
+      </div>
+    </div>
+
+    <div class="catalogo">
+      <aside data-filtros-ancora>
+        <h2 class="sr-only">Filtros</h2>
+        <div class="filtros" data-filtros></div>
+      </aside>
+
+      <div>
+        <div class="barra-catalogo">
+          <div class="busca">
+            <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <label class="sr-only" for="busca-catalogo">Buscar no catalogo</label>
+            <input type="search" id="busca-catalogo" data-busca-catalogo placeholder="Buscar peça, tecido ou cor...">
+          </div>
+
+          <button class="btn btn--contorno abrir-filtros" type="button" data-abrir-filtros
+                  aria-controls="drawer-filtros">
+            <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" aria-hidden="true"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
+            Filtros
+          </button>
+
+          <div>
+            <label class="sr-only" for="ordem">Ordenar por</label>
+            <select id="ordem" data-ordem>
+              <option value="relevancia">Mais relevantes</option>
+              <option value="novidades">Novidades</option>
+              <option value="avaliacao">Melhor avaliadas</option>
+              <option value="menor">Menor preco</option>
+              <option value="maior">Maior preco</option>
+              <option value="nome">Nome (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fichas" data-fichas></div>
+        <p class="apoio" data-contador aria-live="polite"></p>
+        <div class="grade-produtos" data-grade></div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer data-rodape></footer>
+
+  <script src="assets/js/icones.js"></script>
+  <script src="assets/js/dados.js"></script>
+  <script src="assets/js/loja.js"></script>
+  <script src="assets/js/componentes.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

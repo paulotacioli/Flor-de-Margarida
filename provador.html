@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Provador - Flor de Margarida</title>
+  <meta name="description" content="Envie uma foto de corpo inteiro, escolha as pecas e veja como ficam em voce. A foto nao sai do seu aparelho.">
+  <meta name="theme-color" content="#b38ed3">
+  <link rel="icon" href="assets/img/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-pagina="provador">
+
+  <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header data-cabecalho></header>
+
+  <main id="conteudo" class="container secao">
+
+    <div class="secao-topo">
+      <div>
+        <p class="olho">Prova virtual</p>
+        <h1>Veja as peças em você</h1>
+        <p class="suave" style="max-width:56ch">
+          Envie uma foto de corpo inteiro, escolha o que quer provar e veja o caimento e a cor
+          no seu corpo. Tudo acontece no seu aparelho: a foto não e enviada para lugar nenhum.
+        </p>
+      </div>
+    </div>
+
+    <div class="prova">
+      <div class="prova__palco" data-palco data-solta="false">
+        <canvas width="900" height="1200" aria-label="Previa do look no seu corpo" role="img"></canvas>
+        <svg class="prova__guias" viewBox="0 0 900 1200" aria-label="Guias do corpo: arraste os pontos até ombros, quadril, joelhos e tornozelos"></svg>
+        <div class="prova__solta" aria-hidden="true">Solte a foto aqui</div>
+      </div>
+
+      <div class="prova__painel" data-painel-prova></div>
+    </div>
+
+    <section class="painel" style="margin-top:32px">
+      <div class="painel__topo"><h3>Como funciona</h3></div>
+      <ol class="prova__como">
+        <li><strong>Foto de frente, em pe.</strong> Braco ao lado do corpo e roupa justa ajudam a encaixar melhor.</li>
+        <li><strong>Deteccao automática</strong> encontra ombros, quadril, joelhos e tornozelos. Se falhar, arraste as guias.</li>
+        <li><strong>Escolha as peças e as cores.</strong> Vestido substitui parte de cima e de baixo; a sobreposicao vai por cima de tudo.</li>
+        <li><strong>Previa de caimento e cor</strong>, não uma foto de estudio: a peça e desenhada sobre o corpo com a modelagem do catalogo.</li>
+      </ol>
+    </section>
+
+  </main>
+
+  <footer data-rodape></footer>
+
+  <script src="assets/js/icones.js"></script>
+  <script src="assets/js/dados.js"></script>
+  <script src="assets/js/loja.js"></script>
+  <script src="assets/js/componentes.js"></script>
+  <script src="assets/js/prova.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
