@@ -360,49 +360,76 @@ const Loja = (() => {
   /* ---------------- Cabecalho e rodape ---------------- */
 
   const LINKS = [
-    { href: 'produtos.html', texto: 'News', pagina: 'novidades', busca: '?ordem=novidades' },
-    { href: 'produtos.html', texto: 'Roupas', pagina: 'produtos' },  // dropdown com categorias + subcategorias
-    { href: 'produtos.html?categoria=acessorios', texto: 'Acessórios', pagina: 'acessorios' },
+    { href: 'produtos.html?ordem=novidades', texto: 'News', pagina: 'novidades' },
+    { href: 'produtos.html?departamento=roupas', texto: 'Roupas', pagina: 'roupas', departamento: 'roupas' },
+    { href: 'produtos.html?departamento=acessorios', texto: 'Acessórios', pagina: 'acessorios', departamento: 'acessorios' },
     { href: 'index.html#customize', texto: 'Customize', pagina: 'customize' },
     { href: 'sobre.html', texto: 'A loja', pagina: 'sobre' },
     { href: 'contato.html', texto: 'Contato', pagina: 'contato' }
   ];
 
-  /* Painel dropdown do item Roupas: cada categoria. As que tem subcategorias
-     comecam recolhidas e expandem os subtipos ao clicar no nome da categoria. */
-  const submenuRoupas = () => `
-    <div class="submenu" role="menu">
-      ${CATEGORIAS.map((c) => {
-        const subs = SUBCATEGORIAS[c.id];
-        if (!subs) {
-          return `
+  const departamento = (id) => DEPARTAMENTOS.find((d) => d.id === id);
+  const visiveis = (g) => g.categorias.filter((c) => !c.oculto);
+
+  /* Uma categoria no menu: link simples ou, quando tem subcategorias,
+     botao que expande os desdobramentos (Jeans > Calças, Shorts...). */
+  const itemCategoria = (c, prefixo) => {
+    const subs = SUBCATEGORIAS[c.id];
+    if (!subs) {
+      return `<a class="submenu__item" role="menuitem" href="produtos.html?categoria=${c.id}">${c.nome}</a>`;
+    }
+    return `
+      <button class="submenu__item submenu__item--toggle" type="button"
+              data-toggle-sub aria-controls="${prefixo}-${c.id}" aria-expanded="false">
+        ${c.nome} ${icone('chevron_baixo', { classe: 'i--sm' })}
+      </button>
+      <div class="submenu__subs" id="${prefixo}-${c.id}" hidden>
+        <a role="menuitem" href="produtos.html?categoria=${c.id}">Ver tudo em ${c.nome}</a>
+        ${subs
+          .map((sc) => `<a role="menuitem" href="produtos.html?categoria=${c.id}&amp;subcategoria=${sc.id}">${sc.nome}</a>`)
+          .join('')}
+      </div>`;
+  };
+
+  /* Painel dropdown de um departamento: uma coluna por grupo (Roupas)
+     ou uma unica coluna com as categorias (Acessórios). */
+  const submenuDepartamento = (dep) => `
+    <div class="submenu submenu--${dep.id}" role="menu" aria-label="${dep.nome}">
+      ${dep.grupos
+        .map(
+          (g) => `
         <div class="submenu__col">
-          <a class="submenu__cat" role="menuitem" href="produtos.html?categoria=${c.id}">${c.nome}</a>
-        </div>`;
-        }
-        return `
-        <div class="submenu__col">
-          <button class="submenu__cat submenu__cat--toggle" type="button"
-                  data-toggle-sub aria-controls="sub-${c.id}" aria-expanded="false">
-            ${c.nome} ${icone('chevron_baixo', { classe: 'i--sm' })}
-          </button>
-          <div class="submenu__subs" id="sub-${c.id}" hidden>
-            <a role="menuitem" href="produtos.html?categoria=${c.id}">Ver tudo</a>
-            ${subs
-              .map(
-                (sc) =>
-                  `<a role="menuitem" href="produtos.html?categoria=${c.id}&amp;subcategoria=${sc.id}">${sc.nome}</a>`
-              )
-              .join('')}
-          </div>
-        </div>`;
-      }).join('')}
+          ${
+            g.nome
+              ? `<a class="submenu__grupo" role="menuitem" href="produtos.html?grupo=${g.id}">${g.nome}</a>`
+              : ''
+          }
+          ${visiveis(g).map((c) => itemCategoria(c, `sub-${dep.id}`)).join('')}
+        </div>`
+        )
+        .join('')}
+      <a class="submenu__tudo" role="menuitem" href="produtos.html?departamento=${dep.id}">
+        Ver tudo em ${dep.nome} ${icone('seta_direita', { classe: 'i--sm' })}
+      </a>
     </div>`;
+
+  /* No catalogo, o item ativo do menu depende do que esta filtrado na URL */
+  const paginaAtiva = (pagina) => {
+    if (pagina !== 'produtos') return pagina;
+    const q = new URLSearchParams(location.search);
+    if (q.get('ordem') === 'novidades' && !q.get('categoria') && !q.get('grupo') && !q.get('departamento')) return 'novidades';
+    const dep =
+      q.get('departamento') ||
+      (GRUPOS.find((g) => g.id === q.get('grupo')) || {}).departamento ||
+      (CATEGORIAS.find((c) => c.id === (q.get('categoria') || '').split(',')[0]) || {}).departamento;
+    return dep || 'roupas';
+  };
 
   const montarCabecalho = (pagina) => {
     const alvo = document.querySelector('[data-cabecalho]');
     if (!alvo) return;
 
+    const ativa = paginaAtiva(pagina);
     alvo.innerHTML = `
       <div class="aviso-topo"><span class="aviso-topo__frase" data-letreiro></span></div>
       <div class="cabecalho">
@@ -422,11 +449,11 @@ const Loja = (() => {
 
           <nav class="nav-principal" aria-label="Navegação principal">
             ${LINKS.map((l) => {
-              const atual = l.pagina === pagina ? ' aria-current="page"' : '';
-              if (l.pagina === 'produtos') {
+              const atual = l.pagina === ativa ? ' aria-current="page"' : '';
+              if (l.departamento) {
                 return `<div class="nav-drop">
                   <a href="${l.href}"${atual} aria-haspopup="true">${l.texto} ${icone('chevron_baixo', { classe: 'i--sm' })}</a>
-                  ${submenuRoupas()}
+                  ${submenuDepartamento(departamento(l.departamento))}
                 </div>`;
               }
               return `<a href="${l.href}"${atual}>${l.texto}</a>`;
@@ -479,9 +506,10 @@ const Loja = (() => {
           <div>
             <h4>Comprar</h4>
             <ul>
-              ${CATEGORIAS.slice(0, 5)
-                .map((c) => `<li><a href="produtos.html?categoria=${c.id}">${c.nome}</a></li>`)
+              ${GRUPOS.filter((g) => g.nome)
+                .map((g) => `<li><a href="produtos.html?grupo=${g.id}">${g.nome}</a></li>`)
                 .join('')}
+              <li><a href="produtos.html?departamento=acessorios">Acessórios</a></li>
               <li><a href="produtos.html">Ver tudo</a></li>
             </ul>
           </div>
@@ -536,14 +564,51 @@ const Loja = (() => {
         </div>
         <div class="drawer__corpo">
           <nav aria-label="Navegação do menu">
-            <ul style="list-style:none;margin:0;padding:0;display:grid;gap:4px">
-              ${LINKS.map(
-                (l) => `<li><a href="${l.href}" style="display:flex;align-items:center;justify-content:space-between;min-height:52px;font-size:1.125rem;font-weight:500">
-                  ${l.texto} ${icone('chevron_direita')}</a></li>`
-              ).join('')}
+            <ul class="menu-mobile">
+              ${LINKS.map((l) => {
+                if (!l.departamento) {
+                  return `<li><a class="menu-mobile__item" href="${l.href}">${l.texto} ${icone('chevron_direita')}</a></li>`;
+                }
+                const dep = departamento(l.departamento);
+                return `<li>
+                  <button class="menu-mobile__item" type="button" data-toggle-sub
+                          aria-controls="mdep-${dep.id}" aria-expanded="false">
+                    ${l.texto} ${icone('chevron_baixo')}
+                  </button>
+                  <div class="menu-mobile__sub" id="mdep-${dep.id}" hidden>
+                    <a class="menu-mobile__tudo" href="produtos.html?departamento=${dep.id}">Ver tudo em ${dep.nome}</a>
+                    ${dep.grupos
+                      .map(
+                        (g) => `
+                      ${g.nome ? `<a class="menu-mobile__grupo" href="produtos.html?grupo=${g.id}">${g.nome}</a>` : ''}
+                      <ul class="menu-mobile__lista">
+                        ${visiveis(g)
+                          .map((c) => {
+                            const subs = SUBCATEGORIAS[c.id];
+                            if (!subs) return `<li><a href="produtos.html?categoria=${c.id}">${c.nome}</a></li>`;
+                            return `<li>
+                              <button type="button" class="menu-mobile__cat" data-toggle-sub
+                                      aria-controls="msub-${c.id}" aria-expanded="false">
+                                ${c.nome} ${icone('chevron_baixo', { classe: 'i--sm' })}
+                              </button>
+                              <ul class="menu-mobile__lista menu-mobile__lista--sub" id="msub-${c.id}" hidden>
+                                <li><a href="produtos.html?categoria=${c.id}">Ver tudo em ${c.nome}</a></li>
+                                ${subs
+                                  .map((sc) => `<li><a href="produtos.html?categoria=${c.id}&amp;subcategoria=${sc.id}">${sc.nome}</a></li>`)
+                                  .join('')}
+                              </ul>
+                            </li>`;
+                          })
+                          .join('')}
+                      </ul>`
+                      )
+                      .join('')}
+                  </div>
+                </li>`;
+              }).join('')}
             </ul>
           </nav>
-          <div style="display:grid;gap:4px;margin-top:16px;padding-top:16px;border-top:1px solid var(--c-linha)">
+          <div class="menu-mobile__extras">
             <a href="produtos.html?favoritos=1" style="display:flex;align-items:center;gap:12px;min-height:48px">
               ${icone('coracao')} Meus favoritos
               <span class="contagem numero" data-contagem-favoritos hidden
@@ -553,33 +618,6 @@ const Loja = (() => {
                     style="display:flex;align-items:center;gap:12px;min-height:48px;width:100%;
                            background:none;border:0;padding:0;cursor:pointer;text-align:left;color:inherit"></button>
           </div>
-
-          <h4 style="margin:24px 0 8px;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--c-tinta-2)">Categorias</h4>
-          <ul style="list-style:none;margin:0;padding:0;display:grid;gap:2px">
-            ${CATEGORIAS.map((c) => {
-              const subs = SUBCATEGORIAS[c.id];
-              if (!subs) {
-                return `<li>
-                <a href="produtos.html?categoria=${c.id}" style="display:flex;align-items:center;min-height:44px;color:var(--c-tinta-2)">${c.nome}</a>
-              </li>`;
-              }
-              return `<li>
-                <button type="button" data-toggle-sub aria-controls="msub-${c.id}" aria-expanded="false"
-                        style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:44px;background:none;border:0;padding:0;cursor:pointer;color:var(--c-tinta-2);font:inherit;text-align:left">
-                  ${c.nome} ${icone('chevron_baixo', { classe: 'i--sm' })}
-                </button>
-                <ul id="msub-${c.id}" hidden style="list-style:none;margin:0 0 6px;padding:0 0 0 16px;display:grid;gap:2px">
-                  <li><a href="produtos.html?categoria=${c.id}" style="display:flex;align-items:center;min-height:40px;color:var(--c-tinta-3);font-size:.9375rem">Ver tudo</a></li>
-                  ${subs
-                    .map(
-                      (sc) =>
-                        `<li><a href="produtos.html?categoria=${c.id}&amp;subcategoria=${sc.id}" style="display:flex;align-items:center;min-height:40px;color:var(--c-tinta-3);font-size:.9375rem">${sc.nome}</a></li>`
-                    )
-                    .join('')}
-                </ul>
-              </li>`;
-            }).join('')}
-          </ul>
         </div>
       </aside>
 

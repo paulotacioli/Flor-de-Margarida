@@ -797,7 +797,7 @@ input[readonly] { background: var(--c-superficie-2); border-style: dashed; }
 .painel__topo { display: flex; align-items: center; justify-content: space-between; gap: var(--e3); margin-bottom: var(--e4); }
 .painel__topo h3 { margin: 0; font-family: var(--f-texto); font-size: var(--t-md); font-weight: 700; }
 
-.vantagens { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--e4); }
+.vantagens { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--e4); }
 .vantagem {
   padding: var(--e5); border: 1px solid var(--c-linha); border-radius: var(--r-lg);
   background: var(--c-superficie);
@@ -1272,6 +1272,11 @@ input[readonly] { background: var(--c-superficie-2); border-style: dashed; }
   .card__rapido .btn { font-size: var(--t-xs); padding-inline: var(--e2); min-height: 40px; }
   .etiqueta { font-size: 10px; padding: 3px 6px; letter-spacing: .04em; }
   .acoes-etapa .btn--primario { min-width: 0; }
+  .vantagens { grid-template-columns: 1fr; }
+  /* Alvos de toque: nome da peca e migalhas ganham area vertical no celular */
+  .card__nome a { display: inline-block; padding-block: 6px; }
+  .migalhas a { display: inline-block; padding-block: 8px; }
+  .link-botao { min-height: 44px; display: inline-flex; align-items: center; }
   .passo span:not(.passo__num) { display: none; }
   .passo[data-estado="ativo"] span:not(.passo__num) { display: inline; }
 }
@@ -1285,24 +1290,31 @@ input[readonly] { background: var(--c-superficie-2); border-style: dashed; }
 
 /* =============== 21. DROPDOWN, LETREIRO, TOPICOS ======== */
 
-/* Dropdown de Roupas no menu principal (desktop; no mobile a gaveta cobre) */
+/* Dropdowns de Roupas e Acessórios no menu principal (desktop; no mobile a gaveta cobre) */
 .nav-drop { position: relative; display: inline-flex; align-items: center; }
 .nav-drop > a { display: inline-flex; align-items: center; gap: 4px; }
 .submenu {
   position: absolute; top: 100%; left: 0; z-index: var(--z-sticky);
-  min-width: 460px; padding: var(--e4);
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--e3) var(--e4);
+  padding: var(--e4) var(--e4) var(--e3);
+  display: grid; gap: var(--e3) var(--e5);
   background: var(--c-superficie); border: 1px solid var(--c-linha);
   border-radius: var(--r); box-shadow: var(--s3);
   opacity: 0; visibility: hidden; transform: translateY(6px);
   transition: opacity var(--d) var(--ease-saida), transform var(--d) var(--ease-saida), visibility var(--d);
 }
+.submenu--roupas { min-width: 720px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.submenu--acessorios { min-width: 240px; grid-template-columns: 1fr; }
 .nav-drop:hover .submenu,
 .nav-drop:focus-within .submenu { opacity: 1; visibility: visible; transform: none; }
 .submenu__col { display: grid; gap: 2px; align-content: start; }
-.submenu__cat { font-weight: 600; font-size: var(--t-sm); padding: 6px 8px; border-radius: var(--r-sm); color: var(--c-tinta); }
-.submenu__cat:hover { background: var(--c-superficie-2); color: var(--c-acento); text-decoration: none; }
-.submenu__cat--toggle {
+.submenu__grupo {
+  font-size: var(--t-xs); font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--c-acento); padding: 6px 8px 8px; border-bottom: 1px solid var(--c-linha); margin-bottom: 4px;
+}
+.submenu__grupo:hover { color: var(--c-acento-tinta); text-decoration: none; }
+.submenu__item { font-size: var(--t-sm); font-weight: 500; padding: 6px 8px; border-radius: var(--r-sm); color: var(--c-tinta); }
+.submenu__item:hover { background: var(--c-superficie-2); color: var(--c-acento); text-decoration: none; }
+.submenu__item--toggle {
   display: flex; align-items: center; justify-content: space-between; gap: 4px;
   width: 100%; background: none; border: 0; cursor: pointer;
   font-family: inherit; text-align: left;
@@ -1312,6 +1324,45 @@ input[readonly] { background: var(--c-superficie-2); border-style: dashed; }
 .submenu__subs { display: grid; gap: 1px; padding-left: 8px; margin-top: 2px; }
 .submenu__subs a { font-size: var(--t-sm); color: var(--c-tinta-2); padding: 5px 8px; border-radius: var(--r-sm); }
 .submenu__subs a:hover { background: var(--c-superficie-2); color: var(--c-acento); text-decoration: none; }
+.submenu__tudo {
+  grid-column: 1 / -1; display: inline-flex; align-items: center; gap: 6px;
+  padding: var(--e3) 8px 4px; border-top: 1px solid var(--c-linha); margin-top: var(--e2);
+  font-size: var(--t-sm); font-weight: 600; color: var(--c-tinta);
+}
+.submenu__tudo:hover { color: var(--c-acento); text-decoration: none; }
+
+/* Menu mobile: Roupas e Acessórios expandem a mesma arvore do dropdown */
+.menu-mobile { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.menu-mobile__item {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--e2);
+  width: 100%; min-height: 52px; padding: 0;
+  font: inherit; font-size: 1.125rem; font-weight: 500; color: var(--c-tinta);
+  background: none; border: 0; cursor: pointer; text-align: left;
+}
+.menu-mobile__item:hover { text-decoration: none; color: var(--c-acento); }
+.menu-mobile__sub { padding: 0 0 var(--e3) var(--e3); border-left: 2px solid var(--c-linha); margin: 0 0 var(--e2) 4px; }
+.menu-mobile__tudo { display: flex; align-items: center; min-height: 44px; font-weight: 600; color: var(--c-tinta); }
+.menu-mobile__grupo {
+  display: flex; align-items: center; min-height: 40px; margin-top: var(--e2);
+  font-size: var(--t-xs); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--c-acento);
+}
+.menu-mobile__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.menu-mobile__lista a { display: flex; align-items: center; min-height: 44px; color: var(--c-tinta-2); }
+.menu-mobile__lista--sub { padding-left: var(--e4); margin-bottom: var(--e2); }
+.menu-mobile__lista--sub a { min-height: 40px; color: var(--c-tinta-3); font-size: .9375rem; }
+.menu-mobile__cat {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; min-height: 44px; padding: 0;
+  background: none; border: 0; cursor: pointer; color: var(--c-tinta-2); font: inherit; text-align: left;
+}
+.menu-mobile__extras { display: grid; gap: 4px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--c-linha); }
+
+/* Subtitulo de grupo dentro do painel de filtros + descricao da colecao */
+.filtro-subtitulo {
+  margin: var(--e3) 0 var(--e1); font-size: var(--t-xs); font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--c-acento);
+}
+.catalogo__descricao { max-width: 64ch; font-size: var(--t-sm); }
 
 /* Letreiro rotativo do topo */
 .aviso-topo__frase { display: inline-block; opacity: 1; transition: opacity .3s var(--ease-saida); }

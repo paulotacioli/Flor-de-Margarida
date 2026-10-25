@@ -4,30 +4,105 @@
    fetch('/api/produtos') nao exige mudar mais nada.
    ========================================================= */
 
-const CATEGORIAS = [
-  { id: 'blusas-camisetas', nome: 'Blusas e Camisetas' },
-  { id: 'vestidos', nome: 'Vestidos' },
-  { id: 'saias', nome: 'Saias' },
-  { id: 'alfaiataria', nome: 'Conjuntos' },
-  { id: 'jeans', nome: 'Jeans' },
-  { id: 'casacos', nome: 'Casacos' },
-  { id: 'acessorios', nome: 'Acessórios' }
+/* =========================================================
+   Arvore de navegacao: DEPARTAMENTO > GRUPO > CATEGORIA (> SUBCATEGORIA)
+   - DEPARTAMENTOS: os dois itens principais do menu (Roupas e Acessórios).
+   - Cada departamento e grupo carrega descricao de SEO (ate 160 caracteres)
+     e palavras-chave usadas nas metatags e na busca interna.
+   - CATEGORIAS continua sendo a lista plana usada por produto.categoria.
+   ========================================================= */
+
+const DEPARTAMENTOS = [
+  {
+    id: 'roupas',
+    nome: 'Roupas',
+    seo: 'Roupas femininas para o dia a dia e ocasiões especiais: blusas, vestidos, conjuntos, jeans, saias e casacos com caimento que respeita o corpo.',
+    palavras: ['roupas femininas', 'moda feminina', 'loja de roupas feminina', 'look do dia', 'roupas femininas online'],
+    grupos: [
+      {
+        id: 'partes-de-cima',
+        nome: 'Partes de Cima',
+        seo: 'Blusas, camisetas, t-shirts, croppeds, regatas e manga longa femininas em tecidos leves e caimento perfeito para montar qualquer look.',
+        palavras: ['blusas femininas', 'camiseta feminina', 'cropped feminino', 'regata feminina', 'blusa manga longa feminina'],
+        categorias: [
+          { id: 'blusas-camisetas', nome: 'Blusas e Camisetas' },
+          { id: 'tshirts', nome: 'T-shirts' },
+          { id: 'cropped', nome: 'Cropped' },
+          { id: 'regatas-sem-manga', nome: 'Regatas e Sem Manga' },
+          { id: 'manga-longa', nome: 'Manga Longa' }
+        ]
+      },
+      {
+        id: 'pecas-unicas',
+        nome: 'Peças Únicas',
+        seo: 'Vestidos curtos, vestidos longos e conjuntos femininos: a peça única que resolve o look, do casual ao evento, com modelagem elegante.',
+        palavras: ['vestido feminino', 'vestido longo', 'vestido curto', 'conjunto feminino', 'vestido de festa'],
+        categorias: [
+          { id: 'vestidos-curtos', nome: 'Vestidos Curtos' },
+          { id: 'vestidos-longos', nome: 'Vestidos Longos' },
+          { id: 'conjuntos', nome: 'Conjuntos' }
+        ]
+      },
+      {
+        id: 'partes-de-baixo',
+        nome: 'Partes de Baixo',
+        seo: 'Calças jeans, shorts, bermudas, saias jeans e saias femininas com cintura alta e modelagem confortável para compor o look completo.',
+        palavras: ['calça jeans feminina', 'short jeans feminino', 'saia feminina', 'jaqueta jeans feminina', 'saia jeans'],
+        categorias: [
+          { id: 'jeans', nome: 'Jeans' },
+          { id: 'saias', nome: 'Saias' }
+        ]
+      },
+      {
+        id: 'inverno-sobreposicao',
+        nome: 'Inverno / Sobreposição',
+        seo: 'Casacos femininos para o inverno e para sobreposição: trench coats, sobretudos e jaquetas que aquecem sem perder a elegância.',
+        palavras: ['casaco feminino', 'moda inverno feminina', 'sobretudo feminino', 'trench coat feminino', 'jaqueta feminina'],
+        categorias: [
+          { id: 'casacos', nome: 'Casacos' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'acessorios',
+    nome: 'Acessórios',
+    seo: 'Acessórios femininos para completar o look: bolsas, mochilas, cintos, semijoias, bijuterias e óculos de sol selecionados a dedo.',
+    palavras: ['acessórios femininos', 'bolsa feminina', 'semijoias', 'óculos de sol feminino', 'cinto feminino'],
+    grupos: [
+      {
+        id: 'acessorios',
+        nome: null,
+        seo: 'Acessórios femininos para completar o look: bolsas, mochilas, cintos, semijoias, bijuterias e óculos de sol selecionados a dedo.',
+        palavras: ['acessórios femininos', 'bolsa feminina', 'semijoias', 'óculos de sol feminino', 'cinto feminino'],
+        categorias: [
+          { id: 'bolsas-mochilas', nome: 'Bolsas e Mochilas' },
+          { id: 'cintos', nome: 'Cintos' },
+          { id: 'semijoias-bijuterias', nome: 'Semijoias e Bijuterias' },
+          { id: 'oculos-de-sol', nome: 'Óculos de Sol' },
+          /* Fora do menu: existe so para classificar o chapeu que ja estava no catalogo */
+          { id: 'chapeus', nome: 'Chapéus', oculto: true }
+        ]
+      }
+    ]
+  }
 ];
 
-/* Subcategorias por categoria: refinam o catalogo dentro de uma categoria.
-   Hoje so 'blusas-camisetas' usa; adicionar outras aqui e por `subcategoria`
-   no produto. */
+/* Listas planas derivadas da arvore: cada categoria sabe seu grupo e departamento */
+const CATEGORIAS = DEPARTAMENTOS.flatMap((d) =>
+  d.grupos.flatMap((g) =>
+    g.categorias.map((c) => ({ ...c, grupo: g.id, departamento: d.id }))
+  )
+);
+const GRUPOS = DEPARTAMENTOS.flatMap((d) => d.grupos.map((g) => ({ ...g, departamento: d.id })));
+
+/* Subcategorias: desdobram uma categoria em tipos (hoje so Jeans) */
 const SUBCATEGORIAS = {
-  'blusas-camisetas': [
-    { id: 'tshirts', nome: 'T-shirts' },
-    { id: 'cropped', nome: 'Cropped' },
-    { id: 'manga-longa', nome: 'Manga Longa' },
-    { id: 'regata', nome: 'Regata' },
-    { id: 'sem-manga', nome: 'Sem Manga' }
-  ],
-  vestidos: [
-    { id: 'curtos', nome: 'Vestidos Curtos' },
-    { id: 'longos', nome: 'Vestidos Longos' }
+  jeans: [
+    { id: 'calcas-jeans', nome: 'Calças Jeans' },
+    { id: 'shorts-bermudas', nome: 'Shorts e Bermudas' },
+    { id: 'jaquetas-jeans', nome: 'Jaquetas Jeans' },
+    { id: 'saias-jeans', nome: 'Saias Jeans' }
   ]
 };
 
@@ -143,7 +218,6 @@ const PRODUTOS = [
     id: 'camisa-branca-simples',
     nome: 'Camisa Branca Simples',
     categoria: 'blusas-camisetas',
-    subcategoria: 'manga-longa',
     preco: 249.0,
     precoAntigo: null,
     tag: 'novo',
@@ -166,7 +240,7 @@ const PRODUTOS = [
   {
     id: 'short-preto',
     nome: 'Short Preto',
-    categoria: 'alfaiataria',
+    categoria: 'conjuntos',
     preco: 189.0,
     precoAntigo: null,
     tag: 'novo',
@@ -212,8 +286,7 @@ const PRODUTOS = [
   {
     id: 'vestido-longo',
     nome: 'Vestido Longo',
-    categoria: 'vestidos',
-    subcategoria: 'longos',
+    categoria: 'vestidos-longos',
     preco: 389.0,
     precoAntigo: null,
     tag: 'novo',
@@ -236,8 +309,7 @@ const PRODUTOS = [
   {
     id: 'camiseta-algodao-organico',
     nome: 'Camiseta Algodão Orgânico',
-    categoria: 'blusas-camisetas',
-    subcategoria: 'tshirts',
+    categoria: 'tshirts',
     preco: 139.0,
     precoAntigo: null,
     tag: 'top',
@@ -263,8 +335,7 @@ const PRODUTOS = [
   {
     id: 'camiseta-listrada-marinho',
     nome: 'Camiseta Listrada Marinho',
-    categoria: 'blusas-camisetas',
-    subcategoria: 'manga-longa',
+    categoria: 'manga-longa',
     preco: 159.0,
     precoAntigo: 199.0,
     tag: 'oferta',
@@ -288,8 +359,7 @@ const PRODUTOS = [
   {
     id: 'camisa-linho-manga-longa',
     nome: 'Camisa de Linho Manga Longa',
-    categoria: 'blusas-camisetas',
-    subcategoria: 'manga-longa',
+    categoria: 'manga-longa',
     preco: 329.0,
     precoAntigo: null,
     tag: 'top',
@@ -316,7 +386,6 @@ const PRODUTOS = [
     id: 'camisa-oversized-algodao',
     nome: 'Camisa Oversized de Algodão',
     categoria: 'blusas-camisetas',
-    subcategoria: 'manga-longa',
     preco: 289.0,
     precoAntigo: null,
     tag: 'novo',
@@ -341,8 +410,7 @@ const PRODUTOS = [
   {
     id: 'vestido-midi-viscose',
     nome: 'Vestido Midi de Viscose',
-    categoria: 'vestidos',
-    subcategoria: 'curtos',
+    categoria: 'vestidos-curtos',
     preco: 449.0,
     precoAntigo: null,
     tag: 'top',
@@ -368,8 +436,7 @@ const PRODUTOS = [
   {
     id: 'vestido-slip-cetim',
     nome: 'Vestido Slip de Cetim',
-    categoria: 'vestidos',
-    subcategoria: 'curtos',
+    categoria: 'vestidos-curtos',
     preco: 519.0,
     precoAntigo: 649.0,
     tag: 'oferta',
@@ -393,7 +460,7 @@ const PRODUTOS = [
   {
     id: 'blazer-alfaiataria-cropped',
     nome: 'Blazer de Alfaiataria Cropped',
-    categoria: 'alfaiataria',
+    categoria: 'conjuntos',
     preco: 689.0,
     precoAntigo: null,
     tag: 'novo',
@@ -419,7 +486,7 @@ const PRODUTOS = [
   {
     id: 'calca-alfaiataria-pregas',
     nome: 'Calca de Alfaiataria com Pregas',
-    categoria: 'alfaiataria',
+    categoria: 'conjuntos',
     preco: 429.0,
     precoAntigo: null,
     tag: null,
@@ -445,7 +512,7 @@ const PRODUTOS = [
   {
     id: 'short-alfaiataria',
     nome: 'Short de Alfaiataria',
-    categoria: 'alfaiataria',
+    categoria: 'conjuntos',
     preco: 259.0,
     precoAntigo: null,
     tag: 'novo',
@@ -472,6 +539,7 @@ const PRODUTOS = [
     id: 'short-jeans-alto',
     nome: 'Short Jeans Cintura Alta',
     categoria: 'jeans',
+    subcategoria: 'shorts-bermudas',
     preco: 219.0,
     precoAntigo: null,
     tag: null,
@@ -498,6 +566,7 @@ const PRODUTOS = [
     id: 'calca-jeans-reta-alta',
     nome: 'Calca Jeans Reta Cintura Alta',
     categoria: 'jeans',
+    subcategoria: 'calcas-jeans',
     preco: 369.0,
     precoAntigo: null,
     tag: null,
@@ -524,6 +593,7 @@ const PRODUTOS = [
     id: 'jaqueta-jeans-classica',
     nome: 'Jaqueta Jeans Classica',
     categoria: 'jeans',
+    subcategoria: 'jaquetas-jeans',
     preco: 459.0,
     precoAntigo: null,
     tag: null,
@@ -595,7 +665,7 @@ const PRODUTOS = [
   {
     id: 'bolsa-couro-estruturada',
     nome: 'Bolsa de Couro Estruturada',
-    categoria: 'acessorios',
+    categoria: 'bolsas-mochilas',
     preco: 749.0,
     precoAntigo: null,
     tag: 'top',
@@ -617,7 +687,7 @@ const PRODUTOS = [
   {
     id: 'chapeu-palha-aba-larga',
     nome: 'Chapeu de Palha Aba Larga',
-    categoria: 'acessorios',
+    categoria: 'chapeus',
     preco: 219.0,
     precoAntigo: null,
     tag: null,

@@ -21,3 +21,10 @@ python -m http.server 8080
 - `customize.html` - redireciona ao painel de administração em `index.html#customize`
 - `assets/css/style.css` - estilos
 - `assets/js/` - dados, lógica da loja, componentes, provador e painel Customize
+
+## Categorias
+
+A árvore do menu fica em `assets/js/dados.js` (`DEPARTAMENTOS`): Roupas (Partes de Cima,
+Peças Únicas, Partes de Baixo, Inverno / Sobreposição) e Acessórios. Cada departamento e
+grupo tem descrição de SEO e palavras-chave, usadas nas metatags do catálogo e na busca.
+O catálogo aceita `?departamento=`, `?grupo=`, `?categoria=` e `?subcategoria=` na URL.

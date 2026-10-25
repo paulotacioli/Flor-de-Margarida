@@ -38,22 +38,22 @@ function paginaInicio() {
   const bento = document.querySelector('[data-bento]');
   if (bento) {
     const destaque = [
-      { id: 'vestidos', classe: 'bento__item--alto', prod: 'vestido-midi-viscose' },
-      { id: 'alfaiataria', classe: 'bento__item--largo', prod: 'blazer-alfaiataria-cropped' },
-      { id: 'jeans', classe: '', prod: 'calca-jeans-reta-alta' },
-      { id: 'casacos', classe: 'bento__item--largo', prod: 'trench-coat-gabardine' },
-      { id: 'acessorios', classe: '', prod: 'bolsa-couro-estruturada' }
+      { href: 'produtos.html?grupo=pecas-unicas', nome: 'Vestidos', cats: ['vestidos-curtos', 'vestidos-longos'], classe: 'bento__item--alto', prod: 'vestido-midi-viscose' },
+      { href: 'produtos.html?categoria=conjuntos', nome: 'Conjuntos', cats: ['conjuntos'], classe: 'bento__item--largo', prod: 'blazer-alfaiataria-cropped' },
+      { href: 'produtos.html?categoria=jeans', nome: 'Jeans', cats: ['jeans'], classe: '', prod: 'calca-jeans-reta-alta' },
+      { href: 'produtos.html?categoria=casacos', nome: 'Casacos', cats: ['casacos'], classe: 'bento__item--largo', prod: 'trench-coat-gabardine' },
+      { href: 'produtos.html?departamento=acessorios', nome: 'Acessórios', cats: CATEGORIAS.filter((c) => c.departamento === 'acessorios').map((c) => c.id), classe: '', prod: 'bolsa-couro-estruturada' }
     ];
     bento.innerHTML = destaque
       .map((d) => {
         const p = produto(d.prod);
-        const total = PRODUTOS.filter((x) => x.categoria === d.id).length;
+        const total = PRODUTOS.filter((x) => d.cats.includes(x.categoria)).length;
         const [f1, f2] = FUNDOS[p.fundo];
         return `
-        <a class="bento__item ${d.classe}" href="produtos.html?categoria=${d.id}"
+        <a class="bento__item ${d.classe}" href="${d.href}"
            style="background:linear-gradient(120deg, ${f1}, ${f2})">
           <img src="${imagem(p, p.cores[0].hex)}" alt="" loading="lazy">
-          <span class="bento__rotulo">${nomeCategoria(d.id)} ${icone('seta_direita', { classe: 'i--sm' })}</span>
+          <span class="bento__rotulo">${d.nome} ${icone('seta_direita', { classe: 'i--sm' })}</span>
           <span class="sr-only">${total} pecas</span>
         </a>`;
       })
@@ -95,6 +95,8 @@ function paginaProdutos() {
   const listaDe = (chave) => (params.get(chave) || '').split(',').filter(Boolean);
 
   const estado = {
+    departamento: params.get('departamento') || '',
+    grupo: params.get('grupo') || '',
     categorias: listaDe('categoria'),
     subcategorias: listaDe('subcategoria'),
     /* Categorias com as subcategorias abertas (acordeao do filtro).
@@ -116,6 +118,62 @@ function paginaProdutos() {
     busca: params.get('busca') || '',
     ordem: params.get('ordem') || 'relevancia',
     somenteFavoritos: params.get('favoritos') === '1'
+  };
+
+  /* Cabecalho da colecao: nome, descricao de SEO e metatags seguem o que
+     esta filtrado (departamento > grupo > categoria). */
+  const catalogoInfo = () => {
+    const dep = DEPARTAMENTOS.find((d) => d.id === estado.departamento);
+    const grp = GRUPOS.find((g) => g.id === estado.grupo);
+    const cat = estado.categorias.length === 1 ? Loja.categoria(estado.categorias[0]) : null;
+    if (cat) {
+      const g = GRUPOS.find((x) => x.id === cat.grupo);
+      const d = DEPARTAMENTOS.find((x) => x.id === cat.departamento);
+      return { olho: g && g.nome ? `${d.nome} · ${g.nome}` : d.nome, titulo: cat.nome, seo: g.seo, palavras: g.palavras };
+    }
+    if (grp) {
+      const d = DEPARTAMENTOS.find((x) => x.id === grp.departamento);
+      return { olho: d.nome, titulo: grp.nome || d.nome, seo: grp.seo, palavras: grp.palavras };
+    }
+    if (dep) return { olho: 'Coleção', titulo: dep.nome, seo: dep.seo, palavras: dep.palavras };
+    if (estado.ordem === 'novidades') return { olho: 'Chegou agora', titulo: 'Novidades', seo: '', palavras: [] };
+    if (estado.somenteFavoritos) return { olho: 'Salvos por você', titulo: 'Meus favoritos', seo: '', palavras: [] };
+    return { olho: 'Coleção completa', titulo: 'Todas as peças', seo: '', palavras: [] };
+  };
+
+  const atualizarCabecalhoCatalogo = () => {
+    const info = catalogoInfo();
+    const olho = document.querySelector('[data-catalogo-olho]');
+    const titulo = document.querySelector('[data-catalogo-titulo]');
+    const desc = document.querySelector('[data-catalogo-descricao]');
+    if (olho) olho.textContent = info.olho;
+    if (titulo) titulo.textContent = info.titulo;
+    if (desc) {
+      desc.textContent = info.seo;
+      desc.hidden = !info.seo;
+    }
+    document.title = `${info.titulo} - Flor de Margarida`;
+    const meta = (nome, valor) => {
+      let el = document.querySelector(`meta[name="${nome}"]`);
+      if (!el) {
+        el = document.createElement('meta');
+        el.name = nome;
+        document.head.appendChild(el);
+      }
+      el.content = valor;
+    };
+    if (info.seo) meta('description', info.seo);
+    if (info.palavras.length) meta('keywords', info.palavras.join(', '));
+  };
+  atualizarCabecalhoCatalogo();
+
+  /* Palavras-chave do grupo entram na busca interna: "camiseta feminina"
+     encontra as t-shirts mesmo sem a palavra no nome da peca. */
+  const palavrasDe = (p) => {
+    const c = Loja.categoria(p.categoria);
+    const g = c && GRUPOS.find((x) => x.id === c.grupo);
+    const d = c && DEPARTAMENTOS.find((x) => x.id === c.departamento);
+    return [...((g && g.palavras) || []), ...((d && d.palavras) || [])].join(' ');
   };
 
   const PRECO_TETO = Math.ceil(Math.max(...PRODUTOS.map((p) => p.preco)) / 100) * 100;
@@ -150,6 +208,9 @@ function paginaProdutos() {
   const filtrar = () => {
     const termo = estado.busca.trim().toLowerCase();
     return PRODUTOS.filter((p) => {
+      const cat = Loja.categoria(p.categoria) || {};
+      if (estado.departamento && cat.departamento !== estado.departamento) return false;
+      if (estado.grupo && cat.grupo !== estado.grupo) return false;
       if (estado.categorias.length && !estado.categorias.includes(p.categoria)) return false;
       if (estado.subcategorias.length && !estado.subcategorias.includes(p.subcategoria)) return false;
       if (estado.tamanhos.length && !p.tamanhos.some((t) => t.disponivel && estado.tamanhos.includes(t.nome)))
@@ -158,7 +219,7 @@ function paginaProdutos() {
       if (p.preco > estado.precoMax) return false;
       if (estado.somenteFavoritos && !favoritos.tem(p.id)) return false;
       if (termo) {
-        const alvo = `${p.nome} ${p.resumo} ${nomeCategoria(p.categoria)} ${p.cores
+        const alvo = `${p.nome} ${p.resumo} ${nomeCategoria(p.categoria)} ${palavrasDe(p)} ${p.cores
           .map((c) => c.nome)
           .join(' ')}`.toLowerCase();
         if (!alvo.includes(termo)) return false;
@@ -183,6 +244,8 @@ function paginaProdutos() {
   const sincronizarUrl = () => {
     const url = new URL(location.href);
     const set = (k, v) => (v && v.length ? url.searchParams.set(k, v) : url.searchParams.delete(k));
+    set('departamento', estado.departamento);
+    set('grupo', estado.grupo);
     set('categoria', estado.categorias.join(','));
     set('subcategoria', estado.subcategorias.join(','));
     set('tamanho', estado.tamanhos.join(','));
@@ -199,11 +262,15 @@ function paginaProdutos() {
     const contarCategoria = (id) => PRODUTOS.filter((p) => p.categoria === id).length;
     const contarSub = (id) => PRODUTOS.filter((p) => p.subcategoria === id).length;
 
-    painelFiltros.innerHTML = `
-      <div class="filtro-grupo">
-        <h3>Categoria</h3>
-        <div class="filtro-lista">
-          ${CATEGORIAS.map((c) => {
+    /* So os departamentos/grupos do recorte atual aparecem no painel */
+    const departamentosVisiveis = DEPARTAMENTOS.filter(
+      (d) => !estado.departamento || d.id === estado.departamento
+    ).map((d) => ({
+      ...d,
+      grupos: d.grupos.filter((g) => !estado.grupo || g.id === estado.grupo)
+    })).filter((d) => d.grupos.length);
+
+    const blocoCategoria = (c) => {
             const subs = SUBCATEGORIAS[c.id];
             const aberto = estado.expandidas.includes(c.id);
             return `
@@ -244,9 +311,26 @@ function paginaProdutos() {
                   : ''
               }
             </div>`;
-          }).join('')}
-        </div>
-      </div>
+    };
+
+    painelFiltros.innerHTML = `
+      ${departamentosVisiveis
+        .map(
+          (d) => `
+      <div class="filtro-grupo">
+        <h3>${d.nome}</h3>
+        ${d.grupos
+          .map(
+            (g) => `
+          ${g.nome ? `<p class="filtro-subtitulo">${g.nome}</p>` : ''}
+          <div class="filtro-lista">
+            ${g.categorias.filter((c) => !c.oculto || estado.categorias.includes(c.id)).map(blocoCategoria).join('')}
+          </div>`
+          )
+          .join('')}
+      </div>`
+        )
+        .join('')}
 
       <div class="filtro-grupo">
         <h3 id="filtro-tamanho">Tamanho</h3>
@@ -294,7 +378,11 @@ function paginaProdutos() {
 
   /* --- Fichas do que esta ativo --- */
   const desenharFichas = () => {
+    const dep = DEPARTAMENTOS.find((d) => d.id === estado.departamento);
+    const grp = GRUPOS.find((g) => g.id === estado.grupo);
     const ativos = [
+      ...(dep ? [{ tipo: 'departamento', valor: dep.id, texto: dep.nome }] : []),
+      ...(grp && grp.nome ? [{ tipo: 'grupo', valor: grp.id, texto: grp.nome }] : []),
       ...estado.categorias.map((c) => ({ tipo: 'categorias', valor: c, texto: nomeCategoria(c) })),
       ...estado.subcategorias.map((c) => ({ tipo: 'subcategorias', valor: c, texto: nomeSub(c) })),
       ...estado.tamanhos.map((t) => ({ tipo: 'tamanhos', valor: t, texto: `Tamanho ${t}` })),
@@ -321,6 +409,7 @@ function paginaProdutos() {
 
   /* --- Render --- */
   const renderizar = () => {
+    atualizarCabecalhoCatalogo();
     const lista = ordenar(filtrar());
     contador.textContent =
       lista.length === 1 ? '1 peça encontrada' : `${lista.length} peças encontradas`;
@@ -399,6 +488,8 @@ function paginaProdutos() {
   /* --- Limpar / remover fichas (delegado no documento) --- */
   document.addEventListener('click', (e) => {
     if (e.target.closest('[data-limpar-filtros]')) {
+      estado.departamento = '';
+      estado.grupo = '';
       estado.categorias = [];
       estado.subcategorias = [];
       estado.tamanhos = [];
@@ -418,6 +509,7 @@ function paginaProdutos() {
     if (tipo === 'busca') { estado.busca = ''; buscaInput.value = ''; }
     else if (tipo === 'precoMax') estado.precoMax = PRECO_TETO;
     else if (tipo === 'favoritos') estado.somenteFavoritos = false;
+    else if (tipo === 'departamento' || tipo === 'grupo') estado[tipo] = '';
     else estado[tipo] = estado[tipo].filter((v) => v !== valor);
     desenharFiltros();
     renderizar();
@@ -563,6 +655,15 @@ function paginaProduto() {
     alvo.innerHTML = `
       <nav class="migalhas" aria-label="Voce esta em">
         <a href="index.html">Inicio</a> ${icone('chevron_direita')}
+        ${(() => {
+          const c = Loja.categoria(p.categoria) || {};
+          const d = DEPARTAMENTOS.find((x) => x.id === c.departamento);
+          const g = GRUPOS.find((x) => x.id === c.grupo);
+          return [
+            d ? `<a href="produtos.html?departamento=${d.id}">${d.nome}</a> ${icone('chevron_direita')}` : '',
+            g && g.nome ? `<a href="produtos.html?grupo=${g.id}">${g.nome}</a> ${icone('chevron_direita')}` : ''
+          ].join('');
+        })()}
         <a href="produtos.html?categoria=${p.categoria}">${nomeCategoria(p.categoria)}</a> ${icone('chevron_direita')}
         <span aria-current="page">${esc(p.nome)}</span>
       </nav>
