@@ -67,19 +67,21 @@ const DEPARTAMENTOS = [
   {
     id: 'acessorios',
     nome: 'Acessórios',
-    seo: 'Acessórios femininos para completar o look: bolsas, mochilas, cintos, semijoias, bijuterias e óculos de sol selecionados a dedo.',
-    palavras: ['acessórios femininos', 'bolsa feminina', 'semijoias', 'óculos de sol feminino', 'cinto feminino'],
+    seo: 'Acessórios femininos para completar o look: bolsas, cintos, lenços, bandanas, óculos de sol, tiaras, presilhas e scrunchies selecionados a dedo.',
+    palavras: ['acessórios femininos', 'bolsa feminina', 'lenço feminino', 'óculos de sol feminino', 'tiara de cabelo'],
     grupos: [
       {
         id: 'acessorios',
         nome: null,
-        seo: 'Acessórios femininos para completar o look: bolsas, mochilas, cintos, semijoias, bijuterias e óculos de sol selecionados a dedo.',
-        palavras: ['acessórios femininos', 'bolsa feminina', 'semijoias', 'óculos de sol feminino', 'cinto feminino'],
+        seo: 'Acessórios femininos para completar o look: bolsas, cintos, lenços, bandanas, óculos de sol, tiaras, presilhas e scrunchies selecionados a dedo.',
+        palavras: ['acessórios femininos', 'bolsa feminina', 'lenço feminino', 'óculos de sol feminino', 'tiara de cabelo'],
         categorias: [
-          { id: 'bolsas-mochilas', nome: 'Bolsas e Mochilas' },
+          { id: 'bolsas', nome: 'Bolsas' },
           { id: 'cintos', nome: 'Cintos' },
-          { id: 'semijoias-bijuterias', nome: 'Semijoias e Bijuterias' },
+          { id: 'lencos-bandanas', nome: 'Lenços e Bandanas' },
           { id: 'oculos-de-sol', nome: 'Óculos de Sol' },
+          { id: 'tiaras-cabelo', nome: 'Tiaras de Cabelo' },
+          { id: 'presilhas-scrunchies', nome: 'Presilhas e Scrunchies' },
           /* Fora do menu: existe so para classificar o chapeu que ja estava no catalogo */
           { id: 'chapeus', nome: 'Chapéus', oculto: true }
         ]
@@ -665,7 +667,7 @@ const PRODUTOS = [
   {
     id: 'bolsa-couro-estruturada',
     nome: 'Bolsa de Couro Estruturada',
-    categoria: 'bolsas-mochilas',
+    categoria: 'bolsas',
     preco: 749.0,
     precoAntigo: null,
     tag: 'top',
