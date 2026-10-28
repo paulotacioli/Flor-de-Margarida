@@ -727,7 +727,7 @@ const FRETES = [
    aleatoria) exatamente como cadastrada no banco. Nome e cidade aparecem
    no app do cliente; o BR Code limita a 25 e 15 caracteres, sem acento. */
 const PIX = {
-  chave: '',
+  chave: 'flordemargaridamoda@gmail.com',
   nome: 'Flor de Margarida',
   cidade: 'Sao Jose dos Campos'
 };
