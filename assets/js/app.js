@@ -1471,9 +1471,9 @@ function paginaCheckout() {
           <div class="linha" style="align-items:flex-start;gap:16px;flex-wrap:nowrap">
             <span class="escolha__icone">${icone('pix')}</span>
             <div>
-              <strong>QR Code gerado após a confirmação</strong>
+              <strong>QR Code e copia e cola na confirmação do pedido</strong>
               <p class="apoio" style="margin:4px 0 0">
-                Você tem 30 minutos para pagar. O pedido é separado assim que o Pix cair.
+                Pague pelo app do seu banco em até 30 minutos. O pedido é separado assim que o Pix cair.
               </p>
             </div>
           </div>
@@ -1633,20 +1633,34 @@ function paginaCheckout() {
           </div>
         </div>
 
+        ${pedido.pagamentoId === 'pix' ? '<div class="painel" style="text-align:left" data-pix></div>' : ''}
+
         <div class="painel" style="text-align:left">
           <div class="resumo__linha"><span>Forma de pagamento</span><span>${esc(pedido.pagamento)}</span></div>
           <div class="resumo__linha"><span>Itens</span><span class="numero">${pedido.itens.length}</span></div>
           <div class="resumo__total"><span>Total</span><span>${fmt(pedido.total)}</span></div>
         </div>
 
-        <p class="apoio" style="margin-top:24px">
+        ${
+          pedido.pagamentoId === 'pix'
+            ? ''
+            : `<p class="apoio" style="margin-top:24px">
           Demonstração: nenhuma cobrança foi feita e nenhum e-mail foi enviado de verdade.
-        </p>
+        </p>`
+        }
         <div class="linha" style="justify-content:center;margin-top:8px">
           <a class="btn btn--primario" href="produtos.html">Continuar comprando</a>
           <a class="btn btn--contorno" href="index.html">Voltar ao início</a>
         </div>
       </div>`;
+
+    if (pedido.pagamentoId === 'pix' && typeof Pix !== 'undefined') {
+      Pix.renderizar(document.querySelector('[data-pix]'), {
+        valor: pedido.total,
+        txid: pedido.codigo.replace(/[^A-Za-z0-9]/g, ''),
+        descricao: `Pedido ${pedido.codigo}`
+      });
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -1745,6 +1759,7 @@ function paginaCheckout() {
           },
           entrega: t.opcaoFrete,
           pagamento: metodo.nome,
+          pagamentoId: metodo.id,
           itens: carrinho.itens().map((i) => ({
             nome: i.nome, cor: i.cor, tamanho: i.tamanho, quantidade: i.quantidade, preco: i.preco
           })),

@@ -723,7 +723,17 @@ const FRETES = [
   { id: 'expressa', nome: 'Entrega expressa', prazo: 'Ate 24 horas', preco: 39.9, icone: 'relogio' }
 ];
 
-/* Formas de pagamento (somente selecao - sem processamento) */
+/* Pix estatico da loja: preencha a chave (CPF/CNPJ, e-mail, celular ou
+   aleatoria) exatamente como cadastrada no banco. Nome e cidade aparecem
+   no app do cliente; o BR Code limita a 25 e 15 caracteres, sem acento. */
+const PIX = {
+  chave: '',
+  nome: 'Flor de Margarida',
+  cidade: 'Sao Jose dos Campos'
+};
+
+/* Formas de pagamento: Pix e real (BR Code estatico); cartao e boleto
+   continuam somente como selecao, sem processamento. */
 const PAGAMENTOS = [
   { id: 'pix', nome: 'Pix', detalhe: 'Aprovação na hora', icone: 'pix', desconto: 0 },
   { id: 'cartao', nome: 'Cartão de crédito', detalhe: 'Até 6x sem juros', icone: 'cartao', desconto: 0 },

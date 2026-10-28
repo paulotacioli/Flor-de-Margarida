@@ -375,6 +375,7 @@ a.link:hover { color: var(--c-acento); }
   display: inline-flex; align-items: center;
   min-height: 44px; padding-inline: var(--e3);
   font-size: var(--t-sm); font-weight: 500; color: var(--c-tinta-2);
+  white-space: nowrap;
   transition: color var(--d) var(--ease-saida);
 }
 .nav-principal a:hover { color: var(--c-tinta); }
@@ -1363,6 +1364,34 @@ input[readonly] { background: var(--c-superficie-2); border-style: dashed; }
   letter-spacing: .1em; text-transform: uppercase; color: var(--c-acento);
 }
 .catalogo__descricao { max-width: 64ch; font-size: var(--t-sm); }
+
+/* Bloco de pagamento Pix (confirmacao do pedido) */
+.pix { display: grid; gap: var(--e4); }
+.pix__topo { display: flex; align-items: flex-start; gap: var(--e4); }
+.pix__corpo { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: var(--e5); align-items: start; }
+.pix__quadro {
+  padding: var(--e3); background: #fff; border-radius: var(--r);
+  border: 1px solid var(--c-linha); box-shadow: var(--s1);
+}
+.pix__qr { display: block; width: 100%; height: auto; }
+.pix__dados { display: grid; gap: var(--e3); }
+.pix__codigo {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--t-xs); line-height: 1.4; word-break: break-all; resize: none;
+  color: var(--c-tinta-2);
+}
+.pix__meta { margin: 0; display: grid; gap: 6px; font-size: var(--t-sm); }
+.pix__meta div { display: flex; justify-content: space-between; gap: var(--e3); }
+.pix__meta dt { color: var(--c-tinta-2); }
+.pix__meta dd { margin: 0; font-weight: 600; text-align: right; }
+.pix__rodape { display: flex; gap: 8px; align-items: flex-start; margin: 0; padding-top: var(--e3); border-top: 1px dashed var(--c-linha); }
+.pix__rodape .i { flex: none; margin-top: 2px; }
+.pix--aviso { display: flex; gap: var(--e3); align-items: flex-start; color: var(--c-aviso); }
+.pix--aviso code { font-size: var(--t-xs); }
+@media (max-width: 720px) {
+  .pix__corpo { grid-template-columns: 1fr; }
+  .pix__quadro { max-width: 260px; margin-inline: auto; }
+}
 
 /* Letreiro rotativo do topo */
 .aviso-topo__frase { display: inline-block; opacity: 1; transition: opacity .3s var(--ease-saida); }
