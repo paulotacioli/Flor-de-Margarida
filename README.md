@@ -36,3 +36,9 @@ na confirmação do pedido, sem servidor nem provedor. A chave, o nome e a cidad
 ficam no objeto `PIX` em `assets/js/dados.js`. Enquanto a chave estiver vazia, a tela
 de confirmação avisa que o Pix não está configurado. A confirmação do pagamento é manual,
 pelo extrato da conta; o identificador do Pix é o código do pedido (ex.: FM123456).
+
+## Cache
+
+Os arquivos de CSS e JS são referenciados com `?v=<versão>` nas páginas HTML. Ao alterar
+qualquer arquivo em `assets/`, troque a versão em todas as páginas (busque por `?v=`) para
+que os navegadores baixem a versão nova em vez de usar o cache.
