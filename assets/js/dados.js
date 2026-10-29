@@ -569,7 +569,7 @@ const PRODUTOS = [
     nome: 'Calca Jeans Reta Cintura Alta',
     categoria: 'jeans',
     subcategoria: 'calcas-jeans',
-    preco: 369.0,
+    preco: 1.0,
     precoAntigo: null,
     tag: null,
     silhueta: 'jeans',
