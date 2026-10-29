@@ -719,8 +719,8 @@ const CUPONS = {
 /* Opcoes de entrega */
 const FRETES = [
   { id: 'retirada', nome: 'Retirar na loja', prazo: 'Pronto em 2 horas', preco: 0, icone: 'local' },
-  { id: 'padrao', nome: 'Entrega padrao', prazo: '3 a 5 dias uteis', preco: 24.9, icone: 'caminhao' },
-  { id: 'expressa', nome: 'Entrega expressa', prazo: 'Ate 24 horas', preco: 39.9, icone: 'relogio' }
+  { id: 'padrao', nome: 'Entrega padrao', prazo: '3 a 5 dias uteis', preco: 0.5, icone: 'caminhao' },
+  { id: 'expressa', nome: 'Entrega expressa', prazo: 'Ate 24 horas', preco: 0.5, icone: 'relogio' }
 ];
 
 /* Pix estatico da loja: preencha a chave (CPF/CNPJ, e-mail, celular ou
